@@ -1,997 +1,1189 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NK Solutions : Cadre de Plan d'Affaires Stratégique</title>
+    <title>Business Plan: NK Solutions - Optimisation Supply Chain pour PME</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --sage: #9CAF88;
-            --terracotta: #C4A484;
-            --charcoal: #2D3748;
-            --stone: #718096;
-            --cream: #F7FAFC;
-            --white: #FFFFFF;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--cream);
-            color: var(--charcoal);
-            line-height: 1.7;
-        }
-        
-        .serif {
-            font-family: 'Crimson Text', serif;
-        }
-        
-        .hero-gradient {
-            background: linear-gradient(135deg, rgba(156, 175, 136, 0.1) 0%, rgba(196, 164, 132, 0.1) 100%);
-        }
-        
-        .nav-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 280px;
-            background: var(--white);
-            border-right: 1px solid #E2E8F0;
-            z-index: 50;
-            overflow-y: auto;
-            padding: 2rem 1.5rem;
-        }
-        
-        .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
-        }
-        
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--sage), transparent);
-            margin: 4rem 0;
-        }
-        
-        .chart-container {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(45, 55, 72, 0.08);
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .insight-highlight {
-            background: linear-gradient(90deg, var(--sage), var(--terracotta));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 600;
-        }
-        
-        .citation-link {
-            color: var(--sage);
-            text-decoration: none;
-            font-size: 0.875rem;
-            vertical-align: super;
-            margin-left: 2px;
-        }
-        
-        .citation-link:hover {
-            color: var(--terracotta);
-        }
-        
-        .toc-link {
-            display: block;
-            padding: 0.5rem 0;
-            color: var(--stone);
-            text-decoration: none;
-            border-left: 2px solid transparent;
-            padding-left: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .toc-link:hover, .toc-link.active {
-            color: var(--sage);
-            border-left-color: var(--sage);
-            background: rgba(156, 175, 136, 0.05);
-        }
-        
-        @media (max-width: 1024px) {
-            .nav-fixed {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .nav-fixed.mobile-open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sage': '#9CAF88',
+                        'terracotta': '#D4A574',
+                        'charcoal': '#2C3E50',
+                        'cream': '#FAF7F2',
+                        'stone': '#E8E2D5'
+                    },
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif']
+                    }
+                }
             }
         }
-    </style>
+    </script>
   </head>
 
-  <body>
-    <nav class="nav-fixed">
-      <div class="mb-8">
-        <h3 class="serif text-lg font-semibold text-charcoal mb-4">Table des Matières</h3>
-      </div>
+  <body class="bg-cream font-sans text-charcoal leading-relaxed overflow-x-hidden">
+    <!-- Toggle button for mobile -->
+    <button id="toc-toggle" class="fixed top-4 left-4 z-50 lg:hidden bg-sage text-white p-2 rounded-md shadow-lg">
+      <i class="fas fa-bars"></i>
+    </button>
 
-      <div class="space-y-2">
-        <a href="#executive-summary" class="toc-link text-sm">Résumé Exécutif</a>
-        <a href="#company-description" class="toc-link text-sm">Description de l'Entreprise</a>
-        <a href="#market-analysis" class="toc-link text-sm">Analyse du Marché</a>
-        <a href="#organization-management" class="toc-link text-sm">Organisation et Gestion</a>
-        <a href="#service-line" class="toc-link text-sm">Gamme de Services</a>
-        <a href="#marketing-sales" class="toc-link text-sm">Marketing et Ventes</a>
-        <a href="#financial-projections" class="toc-link text-sm">Projections Financières</a>
-      </div>
-
-      <div class="mt-12 p-4 bg-sage bg-opacity-10 rounded-lg">
-        <p class="text-xs text-stone mb-2">Indicateurs Clés</p>
-        <div class="space-y-2 text-xs">
-          <div class="flex justify-between">
-            <span>Taille du Marché (2025)</span>
-            <span class="font-medium">611 M€</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Taux de Croissance</span>
-            <span class="font-medium">5,8 % TCAC</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Objectif Revenus A1</span>
-            <span class="font-medium">50 K€</span>
-          </div>
-        </div>
+    <!-- Fixed Table of Contents -->
+    <nav id="toc" class="fixed left-0 top-0 h-full w-72 bg-white shadow-xl z-50 overflow-y-auto border-r border-stone transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+      <div class="p-6">
+        <button id="toc-close" class="absolute top-4 right-4 lg:hidden text-charcoal">
+          <i class="fas fa-times"></i>
+        </button>
+        <h3 class="font-serif text-lg font-bold text-charcoal mb-6">Table des Matières</h3>
+        <ul class="space-y-3 text-sm">
+          <li>
+            <a href="#executive-summary" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">1. Résumé Analytique</a>
+          </li>
+          <li>
+            <a href="#business-description" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">2. Description de l'Entreprise</a>
+          </li>
+          <li>
+            <a href="#market-analysis" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">3. Analyse de Marché</a>
+          </li>
+          <li>
+            <a href="#organization" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">4. Organisation et Gestion</a>
+          </li>
+          <li>
+            <a href="#services" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">5. Gamme de Services</a>
+          </li>
+          <li>
+            <a href="#marketing" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">6. Stratégie Marketing et Commerciale</a>
+          </li>
+          <li>
+            <a href="#financials" class="block text-sage hover:text-terracotta transition-colors duration-200 font-medium">7. Projections Financières</a>
+          </li>
+        </ul>
       </div>
     </nav>
 
-    <button class="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg" onclick="toggleMobileMenu()">
-      <i class="fas fa-bars text-charcoal"></i>
-    </button>
-
-    <main class="main-content">
-      <section class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
-          <img src="https://kimi-img.moonshot.cn/pub/icon/spinner.svg" alt="Représentation abstraite des connexions de la chaîne d'approvisionnement" class="w-full h-full object-cover" size="wallpaper" aspect="wide" query="supply chain abstract" referrerpolicy="no-referrer" />
-        </div>
-
-        <div class="container mx-auto px-4 sm:px-8 relative z-10">
-          <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 class="serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-charcoal mb-6 leading-tight">
-                <span class="italic text-stone">Cadre Stratégique pour</span>
+    <!-- Main Content -->
+    <div class="lg:ml-72">
+      <!-- Hero Section with Bento Grid -->
+      <section class="bg-gradient-to-br from-sage to-terracotta text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div class="relative z-10 container mx-auto px-4 sm:px-6 py-8 sm:py-16 md:py-20">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 h-auto md:h-96">
+            <!-- Main Title Block -->
+            <div class="md:col-span-8 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6 md:p-8">
+              <h1 class="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+                <em>NK Solutions</em>
                 <br>
-                NK Solutions
+                <span class="text-xl sm:text-2xl md:text-3xl lg:text-4xl">Optimisation Supply Chain pour PME</span>
               </h1>
-
-              <p class="text-lg sm:text-xl text-stone mb-8 leading-relaxed">
-                Un cadre de plan d'affaires complet démontrant la viabilité économique et le positionnement stratégique pour les services d'optimisation de la chaîne d'approvisionnement sur le marché français.
+              <p class="text-base sm:text-lg md:text-xl opacity-90 mb-6">
+                Automatisation des processus et excellence opérationnelle
               </p>
-
-              <div class="flex flex-wrap gap-4 mb-8">
-                <span class="px-4 py-2 bg-sage bg-opacity-20 text-sage rounded-full text-sm font-medium">Micro-Entreprise</span>
-                <span class="px-4 py-2 bg-terracotta bg-opacity-20 text-terracotta rounded-full text-sm font-medium">Automatisation de la Chaîne d'Approvisionnement</span>
-                <span class="px-4 py-2 bg-stone bg-opacity-20 text-stone rounded-full text-sm font-medium">Marché Français</span>
+              <div class="flex flex-wrap gap-3 text-xs sm:text-sm">
+                <span class="bg-white bg-opacity-20 px-3 py-1 sm:px-4 sm:py-2 rounded-full">Excel & VBA</span>
+                <span class="bg-white bg-opacity-20 px-3 py-1 sm:px-4 sm:py-2 rounded-full">Power BI</span>
+                <span class="bg-white bg-opacity-20 px-3 py-1 sm:px-4 sm:py-2 rounded-full">Lean Management</span>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="bg-white bg-opacity-80 backdrop-blur p-6 rounded-xl">
-                <div class="text-3xl font-bold text-sage mb-2">01/09/2025</div>
-                <div class="text-sm text-stone">Date de Lancement</div>
+            <!-- Key Metrics Block -->
+            <div class="md:col-span-4 space-y-4">
+              <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6 text-center">
+                <div class="text-xl sm:text-2xl md:text-3xl font-bold">39 950 €</div>
+                <div class="text-xs sm:text-sm opacity-80">Objectif CA Année 1</div>
               </div>
-
-              <div class="bg-white bg-opacity-80 backdrop-blur p-6 rounded-xl">
-                <div class="text-3xl font-bold text-terracotta mb-2">30 K€</div>
-                <div class="text-sm text-stone">Investissement Initial</div>
+              <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6 text-center">
+                <div class="text-xl sm:text-2xl md:text-3xl font-bold">100</div>
+                <div class="text-xs sm:text-sm opacity-80">Jours facturables</div>
               </div>
+            </div>
 
-              <div class="bg-white bg-opacity-80 backdrop-blur p-6 rounded-xl">
-                <div class="text-3xl font-bold text-sage mb-2">5,8 %</div>
-                <div class="text-sm text-stone">TCAC du Marché</div>
-              </div>
+            <!-- Value Proposition Block -->
+            <div class="md:col-span-6 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6">
+              <h3 class="font-serif text-lg sm:text-xl font-bold mb-3">Proposition de Valeur</h3>
+              <p class="text-xs sm:text-sm opacity-90">
+                Transformer les opérations manuelles et chronophages en processus automatisés et pilotés par les données, pour une excellence opérationnelle accessible à toutes les PME.
+              </p>
+            </div>
 
-              <div class="bg-white bg-opacity-80 backdrop-blur p-6 rounded-xl">
-                <div class="text-3xl font-bold text-terracotta mb-2">6201Z</div>
-                <div class="text-sm text-stone">Code APE</div>
+            <!-- Launch Date Block -->
+            <div class="md:col-span-6 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6">
+              <h3 class="font-serif text-lg sm:text-xl font-bold mb-3">Lancement</h3>
+              <div class="text-center">
+                <div class="text-xl sm:text-2xl md:text-3xl font-bold">01.09.2025</div>
+                <div class="text-xs sm:text-sm opacity-80">Reims, France</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="executive-summary" class="py-20 bg-white">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Résumé Exécutif</h2>
+      <!-- Executive Summary -->
+      <section id="executive-summary" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">1. Résumé Analytique</h2>
 
-          <div class="grid lg:grid-cols-3 gap-8 mb-16">
-            <div class="lg:col-span-2">
-              <h3 class="serif text-2xl font-semibold mb-6">Aperçu Stratégique</h3>
-              <p class="text-lg text-stone mb-6">
-                NK Solutions, fondée par l'ingénieure en chaîne d'approvisionnement Nouha Karim, représente une réponse stratégique à la demande croissante de services spécialisés en automatisation et optimisation de la chaîne d'approvisionnement sur le marché français. Opérant en tant que micro-entreprise avec une date de lancement au 1er septembre 2025, l'entreprise est positionnée pour capitaliser sur le <span class="insight-highlight">marché français du conseil en chaîne d'approvisionnement de 611 M€</span>
-                <a href="https://www.cognitivemarketresearch.com/supply-chain-consulting-market-report" class="citation-link" target="_blank">[49]</a>, qui devrait croître à un TCAC de 5,8 % jusqu'en 2033.
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Mission et Vision</h3>
+              <p class="text-lg mb-6 leading-relaxed">
+                NK Solutions est une micro-entreprise fondée par Nouha Karim, ingénieure spécialisée en gestion de la chaîne d'approvisionnement. Basée à Reims, l'entreprise sera lancée le <strong>1er septembre 2025</strong> avec pour mission de démocratiser l'optimisation des processus logistiques et industriels auprès des PME et TPE françaises.
               </p>
-
-              <p class="text-lg text-stone mb-6">
-                La mission de l'entreprise est de permettre aux petites et moyennes entreprises des secteurs de la fabrication et de la logistique d'atteindre l'excellence opérationnelle grâce à des solutions innovantes et basées sur les données. Avec une exploitation à domicile à Reims et un investissement initial de 30 000 €, NK Solutions est structurée pour des opérations agiles tout en conservant la capacité de fournir des services de conseil de niveau entreprise.
+              <p class="text-lg leading-relaxed">
+                Notre vision est de transformer les opérations manuelles, chronophages et sujettes aux erreurs de nos clients en processus automatisés, efficaces et pilotés par les données, leur permettant ainsi de gagner en compétitivité et de se concentrer sur leur cœur de métier.
               </p>
             </div>
 
-            <div class="bg-sage bg-opacity-5 p-8 rounded-xl">
-              <h4 class="font-semibold text-charcoal mb-4">Objectifs Clés</h4>
-              <ul class="space-y-3 text-stone">
-                <li class="flex items-start">
-                  <i class="fas fa-check-circle text-sage mt-1 mr-3"></i>
-                  <span>Obtenir 5 clients payants la première année</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-check-circle text-sage mt-1 mr-3"></i>
-                  <span>Atteindre 50 000 € de revenus la première année</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-check-circle text-sage mt-1 mr-3"></i>
-                  <span>Maintenir un taux de satisfaction client de 95 %</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-check-circle text-sage mt-1 mr-3"></i>
-                  <span>Atteindre le seuil de rentabilité au 10ème mois d'activité</span>
-                </li>
-              </ul>
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Problème et Solution</h3>
+              <div class="bg-stone rounded-lg p-6 mb-6">
+                <h4 class="font-semibold text-charcoal mb-3">Le Problème</h4>
+                <p class="text-sm mb-4">
+                  Les TPE/PME industrielles et commerciales utilisent des processus manuels inefficaces, manquent de visibilité sur leurs opérations, et sont souvent incapables d'investir dans des solutions coûteuses comme les grands ERP.
+                </p>
+              </div>
+              <div class="bg-sage bg-opacity-10 rounded-lg p-6">
+                <h4 class="font-semibold text-charcoal mb-3">Notre Solution</h4>
+                <p class="text-sm">
+                  Une alternative abordable et flexible aux solutions logicielles coûteuses, combinant expertise technique "hands-on" et implémentation directe d'outils automatisés sur mesure.
+                </p>
+              </div>
             </div>
           </div>
 
-          <div class="chart-container">
-            <h4 class="text-xl font-semibold mb-6">Aperçu des Projections Financières</h4>
-            <div class="grid md:grid-cols-4 gap-6">
-              <div class="text-center p-6 bg-sage bg-opacity-10 rounded-lg">
-                <div class="text-2xl font-bold text-sage mb-2">50 K€</div>
-                <div class="text-sm text-stone">Objectif Revenus Année 1</div>
+          <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+              <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-chart-line text-2xl"></i>
               </div>
-              <div class="text-center p-6 bg-terracotta bg-opacity-10 rounded-lg">
-                <div class="text-2xl font-bold text-terracotta mb-2">80 K€</div>
-                <div class="text-sm text-stone">Projection Année 2</div>
+              <h4 class="font-bold text-lg mb-2">Objectif Financier</h4>
+              <p class="text-3xl font-bold text-sage">39 950 €</p>
+              <p class="text-sm text-gray-600">Chiffre d'affaires année 1</p>
+            </div>
+            <div class="text-center">
+              <div class="bg-terracotta text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users text-2xl"></i>
               </div>
-              <div class="text-center p-6 bg-sage bg-opacity-10 rounded-lg">
-                <div class="text-2xl font-bold text-sage mb-2">120 K€</div>
-                <div class="text-sm text-stone">Objectif Année 3</div>
+              <h4 class="font-bold text-lg mb-2">Marché Cible</h4>
+              <p class="text-3xl font-bold text-terracotta">TPE/PME</p>
+              <p class="text-sm text-gray-600">Industrielles et commerciales</p>
+            </div>
+            <div class="text-center">
+              <div class="bg-charcoal text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-cogs text-2xl"></i>
               </div>
-              <div class="text-center p-6 bg-stone bg-opacity-10 rounded-lg">
-                <div class="text-2xl font-bold text-stone mb-2">40 %</div>
-                <div class="text-sm text-stone">Marge Bénéficiaire Nette</div>
-              </div>
+              <h4 class="font-bold text-lg mb-2">Services Clés</h4>
+              <p class="text-3xl font-bold text-charcoal">2</p>
+              <p class="text-sm text-gray-600">Automatisation & Optimisation</p>
             </div>
           </div>
         </div>
       </section>
 
-      <div class="section-divider"></div>
+      <!-- Business Description -->
+      <section id="business-description" class="py-16 bg-cream">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">2. Description de l'Entreprise</h2>
 
-      <section id="company-description" class="py-20 bg-cream">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Description de l'Entreprise</h2>
-
-          <div class="grid lg:grid-cols-2 gap-12">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
             <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Structure Juridique et Opérations</h3>
-              <p class="text-stone mb-6">
-                NK Solutions opère en tant que micro-entreprise de droit français, spécifiquement structurée comme une « entreprise individuelle » avec Nouha Karim comme seule propriétaire <a href="https://olivier-consultancy.co.uk/french-entrepreneur-visa/" class="citation-link" target="_blank">[76]</a>. Ce cadre juridique offre une simplicité administrative tout en maintenant une crédibilité professionnelle, enregistrée sous le code APE 6201Z pour les activités de programmation informatique.
-              </p>
-
-              <div class="bg-white p-6 rounded-xl mb-6">
-                <h4 class="font-semibold mb-4">Détails de l'Enregistrement de l'Entreprise</h4>
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between">
-                    <span class="text-stone">Raison Sociale :</span>
-                    <span class="font-medium">Entreprise individuelle Nouha Karim</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-stone">Nom Commercial :</span>
-                    <span class="font-medium">NK Solutions</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-stone">Emplacement :</span>
-                    <span class="font-medium">6 Rue Jean-Marie Le Sidaner, 51100 Reims</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-stone">Date de Lancement :</span>
-                    <span class="font-medium">1er septembre 2025</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-stone">Code APE :</span>
-                    <span class="font-medium">6201Z - Programmation informatique</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Expertise de la Fondatrice</h3>
-              <p class="text-stone mb-6">
-                Nouha Karim apporte des qualifications exceptionnelles à NK Solutions, détenant à la fois un Master en Ingénierie des Systèmes Industriels et un diplôme d'Ingénieur en Gestion de la Chaîne d'Approvisionnement <a href="https://www.valoris-avocats.com/en/needs/compliance-advisor-france/" class="citation-link" target="_blank">[28, 63]</a>. Sa compétence technique couvre Excel avancé, VBA, Power BI, et les systèmes ERP incluant Sylob et SAP <a href="https://www.valoris-avocats.com/en/needs/compliance-advisor-france/" class="citation-link" target="_blank">[43, 46]</a>.
-              </p>
-
-              <div class="bg-white p-6 rounded-xl">
-                <h4 class="font-semibold mb-4">Expérience Éprouvée</h4>
-                <ul class="space-y-3">
-                  <li class="flex items-start">
-                    <i class="fas fa-chart-line text-sage mt-1 mr-3"></i>
-                    <span>Développement de tableaux de bord dynamiques offrant des aperçus en temps réel de la chaîne d'approvisionnement</span>
-                  </li>
-                  <li class="flex items-start">
-                    <i class="fas fa-clock text-sage mt-1 mr-3"></i>
-                    <span>Automatisation des processus permettant d'économiser 2,5 heures par jour d'opérations manuelles</span>
-                  </li>
-                  <li class="flex items-start">
-                    <i class="fas fa-cogs text-sage mt-1 mr-3"></i>
-                    <span>Création d'applications pour la gestion automatisée des mouvements de stock</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Proposition de Valeur</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-search text-3xl text-sage mb-4"></i>
-                <h4 class="font-semibold mb-3">Audit de la Chaîne d'Approvisionnement</h4>
-                <p class="text-sm text-stone">Services de diagnostic complets identifiant les inefficacités et les opportunités d'optimisation dans les opérations existantes de la chaîne d'approvisionnement.</p>
-              </div>
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-chart-bar text-3xl text-terracotta mb-4"></i>
-                <h4 class="font-semibold mb-3">Tableaux de Bord Personnalisés</h4>
-                <p class="text-sm text-stone">Solutions de reporting basées sur Power BI offrant une visibilité en temps réel sur les indicateurs de performance clés et les métriques opérationnelles.</p>
-              </div>
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-robot text-3xl text-stone mb-4"></i>
-                <h4 class="font-semibold mb-3">Automatisation des Processus</h4>
-                <p class="text-sm text-stone">Services d'intégration VBA et ERP éliminant les processus manuels et améliorant l'efficacité opérationnelle grâce à une automatisation intelligente.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <section id="market-analysis" class="py-20 bg-white">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Analyse du Marché</h2>
-
-          <div class="grid lg:grid-cols-2 gap-12 mb-16">
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Marché Français du Conseil en Chaîne d'Approvisionnement</h3>
-              <p class="text-stone mb-6">
-                Le marché français du conseil en chaîne d'approvisionnement représente une opportunité significative, évaluée à environ <span class="insight-highlight">670 millions USD</span>
-                <a href="https://www.reportlinker.com/dlp/6ab2eec266e925f3c9da373b7a46d771" class="citation-link" target="_blank">[48]</a> avec des projections atteignant 957,5 millions USD d'ici 2033, indiquant un taux de croissance annuel composé robuste de 5,765 % <a href="https://www.cognitivemarketresearch.com/supply-chain-consulting-market-report" class="citation-link" target="_blank">[49]</a>.
-              </p>
-
-              <div class="bg-sage bg-opacity-10 p-6 rounded-xl mb-6">
-                <h4 class="font-semibold mb-4">Moteurs du Marché</h4>
-                <ul class="space-y-3 text-sm">
-                  <li class="flex items-start">
-                    <i class="fas fa-industry text-sage mt-1 mr-3"></i>
-                    <span>Adoption de l'Industrie 4.0 accélérant les initiatives de transformation numérique</span>
-                  </li>
-                  <li class="flex items-start">
-                    <i class="fas fa-leaf text-sage mt-1 mr-3"></i>
-                    <span>Accent accru sur la durabilité et la résilience de la chaîne d'approvisionnement</span>
-                  </li>
-                  <li class="flex items-start">
-                    <i class="fas fa-gavel text-sage mt-1 mr-3"></i>
-                    <span>Loi française sur le devoir de vigilance créant des exigences de conformité pour les grandes entreprises</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Opportunité de l'Industrie 4.0</h3>
-              <p class="text-stone mb-6">
-                Le marché de l'Industrie 4.0 en France présente un potentiel de croissance explosif, évalué à <span class="insight-highlight">6,17 milliards USD en 2024</span> et projeté à 22,41 milliards USD d'ici 2033, représentant un TCAC de 15,4 % <a href="https://straitsresearch.com/report/industry-4.0-market/france" class="citation-link" target="_blank">[40]</a>.
-              </p>
-
-              <div class="chart-container">
-                <h4 class="text-lg font-semibold mb-4">Trajectoire de Croissance du Marché</h4>
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Informations Générales</h3>
+              <div class="bg-white rounded-lg p-6 shadow-sm">
                 <div class="space-y-4">
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Valeur du Marché 2024</span>
-                    <span class="font-semibold">6,17 Mds $</span>
+                  <div class="flex justify-between border-b pb-2">
+                    <span class="font-medium">Raison Sociale</span>
+                    <span>Entreprise individuelle Nouha Karim</span>
                   </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Projection 2033</span>
-                    <span class="font-semibold">22,41 Mds $</span>
+                  <div class="flex justify-between border-b pb-2">
+                    <span class="font-medium">Nom Commercial</span>
+                    <span>NK Solutions</span>
                   </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">TCAC</span>
-                    <span class="font-semibold text-sage">15,4 %</span>
+                  <div class="flex justify-between border-b pb-2">
+                    <span class="font-medium">Statut Juridique</span>
+                    <span>Micro-entreprise</span>
+                  </div>
+                  <div class="flex justify-between border-b pb-2">
+                    <span class="font-medium">Régime Fiscal</span>
+                    <span>BNC (Versement libératoire)</span>
+                  </div>
+                  <div class="flex justify-between border-b pb-2">
+                    <span class="font-medium">Adresse</span>
+                    <span>6 Rue Jean-Marie Le Sidaner, 51100 Reims</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="font-medium">Date de Lancement</span>
+                    <span>01/09/2025</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Structure et Fiscalité</h3>
+              <div class="space-y-6">
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <h4 class="font-bold text-charcoal mb-3">Avantages du Statut</h4>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Simplification administrative et comptable</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Allègement des charges sociales et fiscales</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Franchise en base TVA (seuil < 70 000 €)</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Versement libératoire de l'impôt sur le revenu</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-8 text-center">Problématiques Clients Résolues</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="bg-white rounded-lg p-6 shadow-sm text-center">
+                <div class="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-clock text-red-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Inefficacité</h4>
+                <p class="text-sm text-gray-600">Processus manuels chronophages</p>
+              </div>
+              <div class="bg-white rounded-lg p-6 shadow-sm text-center">
+                <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-eye text-blue-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Manque de Visibilité</h4>
+                <p class="text-sm text-gray-600">Absence de tableaux de bord en temps réel</p>
+              </div>
+              <div class="bg-yellow-100 rounded-lg p-6 shadow-sm text-center">
+                <div class="bg-yellow-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Erreurs</h4>
+                <p class="text-sm text-gray-600">Risques d'erreurs humaines</p>
+              </div>
+              <div class="bg-green-100 rounded-lg p-6 shadow-sm text-center">
+                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-euro-sign text-green-600 text-xl"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Coûts Élevés</h4>
+                <p class="text-sm text-gray-600">Optimisation des dépenses</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-sage bg-opacity-10 rounded-lg p-8">
+            <h3 class="font-serif text-2xl font-bold text-charcoal mb-6 text-center">Valeurs Fondamentales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-chart-bar text-lg"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Résultats basés sur les données</h4>
+              </div>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-handshake text-lg"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Partenariat client</h4>
+              </div>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-lightbulb text-lg"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Innovation pragmatique</h4>
+              </div>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-shield-alt text-lg"></i>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Confidentialité et fiabilité</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Market Analysis -->
+      <section id="market-analysis" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">3. Analyse de Marché</h2>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Présentation du Secteur</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <p class="text-lg mb-6 leading-relaxed">
+                  NK Solutions évolue dans le secteur des <strong>activités spécialisées, scientifiques et techniques</strong> (code APE 6201Z), un marché en forte croissance porté par la digitalisation et l'externalisation des processus business. Ce secteur est caractérisé par une demande croissante en services d'automatisation et d'optimisation.
+                </p>
+                <div class="bg-stone rounded-lg p-6">
+                  <h4 class="font-bold text-charcoal mb-3">Tendances Clés</h4>
+                  <ul class="space-y-2">
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-trend-up text-sage mt-1 mr-2"></i>
+                      <span>Externalisation croissante des processus non-stratégiques</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-trend-up text-sage mt-1 mr-2"></i>
+                      <span>Demande accrue pour des solutions à coût maîtrisé</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-trend-up text-sage mt-1 mr-2"></i>
+                      <span>Focus sur l'optimisation des coûts opérationnels</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div>
+                <div class="bg-sage bg-opacity-10 rounded-lg p-6 mb-6">
+                  <h4 class="font-bold text-charcoal mb-3">Marché de l'Externalisation Commerciale</h4>
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-sage mb-2">5 milliards €</div>
+                    <p class="text-sm text-gray-600">Marché français - Croissance soutenue</p>
+                  </div>
+                  <p class="text-sm mt-4">
+                    <a href="https://www.capeos.fr/comment-calculer-son-seuil-de-rentabilite/" class="text-sage hover:underline" target="_blank">Source: CAPEOS</a>
+                  </p>
+                </div>
+                <div class="bg-terracotta bg-opacity-10 rounded-lg p-6">
+                  <h4 class="font-bold text-charcoal mb-3">Taux d'Externalisation</h4>
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-terracotta mb-2">82%</div>
+                    <p class="text-sm text-gray-600">Des entreprises françaises pratiquent l'externalisation</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mb-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Analyse du Marché Cible</h3>
-            <div class="grid md:grid-cols-2 gap-8">
-              <div class="bg-terracotta bg-opacity-10 p-8 rounded-xl">
-                <h4 class="font-semibold mb-4">Industries Cibles Primaires</h4>
-                <div class="space-y-4">
-                  <div>
-                    <div class="font-medium">Secteur manufacturier</div>
-                    <div class="text-sm text-stone">Production manufacturière française : 861 Mds € en 2023, projetée à 916 Mds € d'ici 2028</div>
-                  </div>
-                  <div>
-                    <div class="font-medium">Industrie automobile</div>
-                    <div class="text-sm text-stone">Taille du marché : 114,38 Mds $ en 2023, croissant à 263,91 Mds $ d'ici 2035</div>
-                  </div>
-                  <div>
-                    <div class="font-medium">Détail et Biens de Consommation</div>
-                    <div class="text-sm text-stone">Chaînes d'approvisionnement rapides nécessitant des solutions d'optimisation agiles</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-sage bg-opacity-10 p-8 rounded-xl">
-                <h4 class="font-semibold mb-4">Profil Client Idéal</h4>
-                <div class="space-y-3">
-                  <div class="flex items-start">
-                    <i class="fas fa-building text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Petites et moyennes entreprises (PME)</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-euro-sign text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Chiffre d'affaires annuel : 5 M€ - 50 M€</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-map-marker-alt text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Situées dans la région Grand Est, France</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-cogs text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Utilisant des systèmes ERP existants (SAP, Sylob)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="serif text-2xl font-semibold mb-8">Paysage Concurrentiel</h3>
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Analyse de la Concurrence</h3>
             <div class="overflow-x-auto">
-              <table class="w-full bg-white rounded-xl overflow-hidden shadow-lg">
-                <thead class="bg-charcoal text-white">
+              <table class="w-full bg-white rounded-lg shadow-sm">
+                <thead class="bg-sage text-white">
                   <tr>
                     <th class="px-6 py-4 text-left">Type de Concurrent</th>
                     <th class="px-6 py-4 text-left">Forces</th>
                     <th class="px-6 py-4 text-left">Faiblesses</th>
-                    <th class="px-6 py-4 text-left">Avantage de NK Solutions</th>
+                    <th class="px-6 py-4 text-left">Positionnement NK Solutions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                   <tr>
                     <td class="px-6 py-4 font-medium">Grands Cabinets de Conseil</td>
-                    <td class="px-6 py-4 text-sm text-stone">Ressources mondiales, réputation de la marque, services complets</td>
-                    <td class="px-6 py-4 text-sm text-stone">Coût élevé, service moins personnalisé, processus bureaucratiques</td>
-                    <td class="px-6 py-4 text-sm">Excellence abordable avec une attention personnalisée</td>
-                  </tr>
-                  <tr class="bg-gray-50">
-                    <td class="px-6 py-4 font-medium">Consultants Indépendants</td>
-                    <td class="px-6 py-4 text-sm text-stone">Rentable, flexible, service personnalisé</td>
-                    <td class="px-6 py-4 text-sm text-stone">Capacité limitée, expertise restreinte, problèmes de fiabilité</td>
-                    <td class="px-6 py-4 text-sm">Expertise complète avec une expérience éprouvée</td>
+                    <td class="px-6 py-4 text-sm">Expertise reconnue, réseau international</td>
+                    <td class="px-6 py-4 text-sm">Coûts très élevés, approche standardisée</td>
+                    <td class="px-6 py-4 text-sm">Alternative abordable, approche personnalisée</td>
                   </tr>
                   <tr>
-                    <td class="px-6 py-4 font-medium">NK Solutions</td>
-                    <td class="px-6 py-4 text-sm text-stone">Expertise spécialisée, mise en œuvre pratique, focus sur les PME</td>
-                    <td class="px-6 py-4 text-sm text-stone">Capacité initiale limitée, nouvel entrant sur le marché</td>
-                    <td class="px-6 py-4 text-sm text-sage font-medium">« Résultats d'expert avec l'agilité d'un indépendant »</td>
+                    <td class="px-6 py-4 font-medium">Consultants Indépendants</td>
+                    <td class="px-6 py-4 text-sm">Flexibilité, coûts modérés</td>
+                    <td class="px-6 py-4 text-sm">Limites techniques, pas d'implémentation</td>
+                    <td class="px-6 py-4 text-sm">Expertise technique "hands-on", implémentation garantie</td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 font-medium">Éditeurs Logiciels (SaaS)</td>
+                    <td class="px-6 py-4 text-sm">Solutions standardisées, évolutives</td>
+                    <td class="px-6 py-4 text-sm">Rigidité, coûts d'abonnement récurrents</td>
+                    <td class="px-6 py-4 text-sm">Solutions sur mesure, sans contrainte d'abonnement</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+
+          <div>
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Profil du Client Idéal</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h4 class="font-bold text-charcoal mb-3">Caractéristiques</h4>
+                <ul class="text-sm space-y-2">
+                  <li>• TPE/PME industrielles/commerciales</li>
+                  <li>• 10-100 salariés</li>
+                  <li>• Chiffre d'affaires : 1-10M€</li>
+                  <li>• Secteurs : industrie, logistique, distribution</li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h4 class="font-bold text-charcoal mb-3">Technologie</h4>
+                <ul class="text-sm space-y-2">
+                  <li>• Utilisation d'Excel intensif</li>
+                  <li>• Besoin de reporting</li>
+                  <li>• Peu ou pas d'ERP intégré</li>
+                  <li>• Systèmes disparates</li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h4 class="font-bold text-charcoal mb-3">Défis</h4>
+                <ul class="text-sm space-y-2">
+                  <li>• Processus manuels lourds</li>
+                  <li>• Manque de visibilité temps réel</li>
+                  <li>• Erreurs récurrentes</li>
+                  <li>• Coûts opérationnels élevés</li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-6 shadow-sm">
+                <h4 class="font-bold text-charcoal mb-3">Objectifs</h4>
+                <ul class="text-sm space-y-2">
+                  <li>• Automatiser les tâches répétitives</li>
+                  <li>• Réduire les coûts</li>
+                  <li>• Améliorer l'efficacité</li>
+                  <li>• Prendre des décisions éclairées</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div class="section-divider"></div>
+      <!-- Organization & Management -->
+      <section id="organization" class="py-16 bg-cream">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">4. Organisation et Gestion</h2>
 
-      <section id="organization-management" class="py-20 bg-cream">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Organisation et Gestion</h2>
-
-          <div class="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Structure de Gestion</h3>
-              <p class="text-stone mb-6">
-                NK Solutions fonctionne avec une structure de gestion légère, Nouha Karim étant l'unique fondatrice, gérante et employée dans la phase initiale <a href="https://olivier-consultancy.co.uk/french-entrepreneur-visa/" class="citation-link" target="_blank">[76, 149]</a>. Cette structure maximise la flexibilité opérationnelle tout en maintenant un contrôle direct sur la qualité du service et les relations clients.
-              </p>
-
-              <div class="bg-white p-6 rounded-xl mb-6">
-                <h4 class="font-semibold mb-4">Responsabilités Clés</h4>
-                <div class="space-y-3">
-                  <div class="flex items-start">
-                    <i class="fas fa-bullseye text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Direction stratégique et développement commercial</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-handshake text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Gestion de la relation client et livraison des projets</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-calculator text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Gestion financière et conformité réglementaire</span>
-                  </div>
-                  <div class="flex items-start">
-                    <i class="fas fa-chart-line text-sage mt-1 mr-3"></i>
-                    <span class="text-sm">Marketing, ventes et gestion opérationnelle</span>
-                  </div>
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-8 text-center">Structure Organisationnelle</h3>
+            <div class="flex justify-center">
+              <div class="bg-white rounded-lg p-8 shadow-sm text-center max-w-md">
+                <div class="bg-sage text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-user-tie text-3xl"></i>
+                </div>
+                <h4 class="font-bold text-xl text-charcoal mb-2">Nouha Karim</h4>
+                <p class="text-sage font-medium mb-4">Fondatrice & Gérante</p>
+                <div class="text-sm text-gray-600 space-y-1">
+                  <p>• Stratégie et développement commercial</p>
+                  <p>• Conseil et optimisation Supply Chain</p>
+                  <p>• Développement solutions techniques</p>
+                  <p>• Gestion administrative et financière</p>
                 </div>
               </div>
             </div>
+          </div>
 
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
             <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Cadre Juridique et Consultatif</h3>
-              <p class="text-stone mb-6">
-                La structure de micro-entreprise offre des avantages administratifs significatifs, y compris un enregistrement simplifié via un portail unique et un traitement fiscal favorable sous le régime BNC <a href="https://www.frenchbusinessadvice.com/the-micro-company-updatedarticle/" class="citation-link" target="_blank">[39]</a>.
-              </p>
-
-              <div class="bg-white p-6 rounded-xl">
-                <h4 class="font-semibold mb-4">Équipe de Conseil Externe</h4>
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Profil du Fondateur</h3>
+              <div class="bg-white rounded-lg p-6 shadow-sm">
                 <div class="space-y-4">
                   <div>
-                    <div class="font-medium">Expert-Comptable</div>
-                    <div class="text-sm text-stone">Conseils d'expert sur l'optimisation fiscale française et la conformité financière</div>
+                    <h4 class="font-bold text-charcoal mb-2">Diplômes et Formations</h4>
+                    <ul class="text-sm space-y-1">
+                      <li>• Master 2 Génie des Systèmes Industriels – Université de Lorraine (2024)</li>
+                      <li>• Ingénieur en Supply Chain Management – ENSA Maroc (2022)</li>
+                    </ul>
                   </div>
                   <div>
-                    <div class="font-medium">Conseiller Juridique</div>
-                    <div class="text-sm text-stone">Développement de contrats, protection de la propriété intellectuelle et conformité RGPD</div>
+                    <h4 class="font-bold text-charcoal mb-2">Expérience Professionnelle</h4>
+                    <ul class="text-sm space-y-1">
+                      <li>• <strong>FOC Transmissions</strong> : ERP Sylob, interfaces HMI, optimisation logistique</li>
+                      <li>• <strong>Motherson Reydel Autotec</strong> : gestion fournisseurs, automatisation Excel/VBA</li>
+                      <li>• <strong>Lear Corporation</strong> : reporting Power BI et Excel automatisé</li>
+                      <li>• <strong>Marjane Holding</strong> : application de suivi de stock en temps réel</li>
+                    </ul>
                   </div>
                   <div>
-                    <div class="font-medium">Mentor d'Affaires</div>
-                    <div class="text-sm text-stone">Orientation stratégique et aide à la navigation sur le marché</div>
+                    <h4 class="font-bold text-charcoal mb-2">Compétences Techniques</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="bg-sage bg-opacity-20 text-sage px-3 py-1 rounded-full text-xs">Excel Avancé</span>
+                      <span class="bg-sage bg-opacity-20 text-sage px-3 py-1 rounded-full text-xs">VBA</span>
+                      <span class="bg-sage bg-opacity-20 text-sage px-3 py-1 rounded-full text-xs">Power BI</span>
+                      <span class="bg-sage bg-opacity-20 text-sage px-3 py-1 rounded-full text-xs">ERP (Sylob, SAP)</span>
+                      <span class="bg-sage bg-opacity-20 text-sage px-3 py-1 rounded-full text-xs">Lean Management</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="mt-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Planification de la Croissance Future</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-user-plus text-3xl text-sage mb-4"></i>
-                <h4 class="font-semibold mb-3">Premier Employé (Année 3)</h4>
-                <p class="text-sm text-stone mb-4">Embauche d'un consultant junior pour accroître la capacité et l'offre de services</p>
-                <div class="text-xs text-stone">Déclencheur : Revenus constants dépassant 100K € par an</div>
-              </div>
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-handshake text-3xl text-terracotta mb-4"></i>
-                <h4 class="font-semibold mb-3">Partenariats Stratégiques</h4>
-                <p class="text-sm text-stone mb-4">Fournisseurs d'ERP, cabinets comptables et fournisseurs de technologies complémentaires</p>
-                <div class="text-xs text-stone">Objectif : Génération de leads et amélioration des services</div>
-              </div>
-              <div class="bg-white p-8 rounded-xl">
-                <i class="fas fa-building text-3xl text-stone mb-4"></i>
-                <h4 class="font-semibold mb-3">Évolution de la Structure Juridique</h4>
-                <p class="text-sm text-stone mb-4">Transition potentielle vers une SARL ou une SAS pour une protection à responsabilité limitée</p>
-                <div class="text-xs text-stone">Considération : Revenus approchant le seuil de 77,7K €</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <section id="service-line" class="py-20 bg-white">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Gamme de Services</h2>
-
-          <div class="grid lg:grid-cols-2 gap-12 mb-16">
             <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Offres de Services Principales</h3>
-              <p class="text-stone mb-6">
-                NK Solutions fournit des services spécialisés d'optimisation de la chaîne d'approvisionnement en s'appuyant sur une expertise technique avancée en Power BI, VBA et systèmes ERP. Chaque service est conçu pour répondre aux problématiques spécifiques identifiées sur le marché cible.
-              </p>
-
+              <h3 class="font-serif text-2xl font-bold text-sage mb-6">Stratégie de Croissance</h3>
               <div class="space-y-6">
-                <div class="bg-sage bg-opacity-10 p-6 rounded-xl">
-                  <h4 class="font-semibold mb-3">Audit et Diagnostic de la Chaîne d'Approvisionnement</h4>
-                  <p class="text-sm text-stone mb-3">Évaluation complète des opérations actuelles, identification des inefficacités et fourniture de recommandations stratégiques d'amélioration.</p>
-                  <div class="text-xs text-sage">Livrable : Rapport d'audit détaillé avec analyse du retour sur investissement</div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <h4 class="font-bold text-charcoal mb-3">Phase 1 : Lancement (Année 1)</h4>
+                  <ul class="text-sm space-y-2">
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-sage mt-1 mr-2"></i>
+                      <span>Focus sur l'acquisition des premiers clients</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-sage mt-1 mr-2"></i>
+                      <span>Validation du modèle économique</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-sage mt-1 mr-2"></i>
+                      <span>Standardisation des processus</span>
+                    </li>
+                  </ul>
                 </div>
-
-                <div class="bg-terracotta bg-opacity-10 p-6 rounded-xl">
-                  <h4 class="font-semibold mb-3">Développement de Tableaux de Bord Personnalisés</h4>
-                  <p class="text-sm text-stone mb-3">Solutions de reporting basées sur Power BI offrant une visibilité en temps réel sur les métriques de performance de la chaîne d'approvisionnement.</p>
-                  <div class="text-xs text-terracotta">Livrable : Tableaux de bord interactifs avec suivi des KPI</div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <h4 class="font-bold text-charcoal mb-3">Phase 2 : Croissance (Années 2-3)</h4>
+                  <ul class="text-sm space-y-2">
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-terracotta mt-1 mr-2"></i>
+                      <span>Développement de l'offre de formation</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-terracotta mt-1 mr-2"></i>
+                      <span>Éventuelle embauche de prestataires</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-terracotta mt-1 mr-2"></i>
+                      <span>Élargissement géographique</span>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </div>
-
-            <div>
-              <div class="space-y-6">
-                <div class="bg-stone bg-opacity-10 p-6 rounded-xl">
-                  <h4 class="font-semibold mb-3">Mise en Œuvre de l'Automatisation des Processus</h4>
-                  <p class="text-sm text-stone mb-3">Services d'intégration VBA et ERP éliminant les processus manuels et améliorant l'efficacité opérationnelle.</p>
-                  <div class="text-xs text-stone">Livrable : Flux de travail automatisés avec documentation de formation</div>
-                </div>
-
-                <div class="bg-white border-2 border-sage p-6 rounded-xl">
-                  <h4 class="font-semibold mb-3">Optimisation et Support Continus</h4>
-                  <p class="text-sm text-stone mb-3">Service mensuel sous contrat assurant un suivi continu des performances et une optimisation proactive.</p>
-                  <div class="text-xs text-sage">Livrable : Revenus récurrents avec des partenariats clients à long terme</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Stratégie de Tarification</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="bg-white border border-gray-200 p-8 rounded-xl">
-                <i class="fas fa-euro-sign text-3xl text-sage mb-4"></i>
-                <h4 class="font-semibold mb-3">Projets à Forfait</h4>
-                <p class="text-sm text-stone mb-4">Périmètre bien défini avec une certitude des coûts pour les clients</p>
-                <div class="text-lg font-semibold text-sage">5 000-15 000 €</div>
-                <div class="text-xs text-stone">Par projet</div>
-              </div>
-              <div class="bg-white border border-gray-200 p-8 rounded-xl">
-                <i class="fas fa-clock text-3xl text-terracotta mb-4"></i>
-                <h4 class="font-semibold mb-3">Taux Horaire</h4>
-                <p class="text-sm text-stone mb-4">Tarification flexible pour des périmètres de projet évolutifs</p>
-                <div class="text-lg font-semibold text-terracotta">120-150 €</div>
-                <div class="text-xs text-stone">Par heure</div>
-              </div>
-              <div class="bg-white border border-gray-200 p-8 rounded-xl">
-                <i class="fas fa-calendar-alt text-3xl text-stone mb-4"></i>
-                <h4 class="font-semibold mb-3">Contrat Mensuel</h4>
-                <p class="text-sm text-stone mb-4">Support continu avec des coûts prévisibles</p>
-                <div class="text-lg font-semibold text-stone">1 500-3 000 €</div>
-                <div class="text-xs text-stone">Par mois</div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="serif text-2xl font-semibold mb-8">Cycle de Vie du Projet</h3>
-            <div class="relative">
-              <div class="absolute left-4 sm:left-8 top-0 bottom-0 w-0.5 bg-sage"></div>
-              <div class="space-y-8">
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-sage rounded-full flex items-center justify-center text-white font-bold mr-4 sm:mr-6">1</div>
-                  <div>
-                    <h4 class="font-semibold mb-2">Consultation Initiale et Découverte</h4>
-                    <p class="text-sm text-stone">Évaluation approfondie des besoins, des défis et des objectifs du client lors de sessions de découverte complètes.</p>
-                  </div>
-                </div>
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-terracotta rounded-full flex items-center justify-center text-white font-bold mr-4 sm:mr-6">2</div>
-                  <div>
-                    <h4 class="font-semibold mb-2">Proposition et Contrat</h4>
-                    <p class="text-sm text-stone">Définition détaillée du périmètre, architecture de la solution, établissement du calendrier et accord formel.</p>
-                  </div>
-                </div>
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-stone rounded-full flex items-center justify-center text-white font-bold mr-4 sm:mr-6">3</div>
-                  <div>
-                    <h4 class="font-semibold mb-2">Mise en Œuvre et Livraison</h4>
-                    <p class="text-sm text-stone">Développement de la solution, tests, déploiement et formation complète pour les équipes du client.</p>
-                  </div>
-                </div>
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 bg-sage rounded-full flex items-center justify-center text-white font-bold mr-4 sm:mr-6">4</div>
-                  <div>
-                    <h4 class="font-semibold mb-2">Suivi et Support</h4>
-                    <p class="text-sm text-stone">Support post-implémentation, suivi des performances et services d'optimisation continue.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <section id="marketing-sales" class="py-20 bg-cream">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Stratégie Marketing et Commerciale</h2>
-
-          <div class="mb-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Proposition de Vente Unique</h3>
-            <div class="bg-white p-12 rounded-xl text-center">
-              <blockquote class="serif text-3xl italic text-charcoal mb-6">
-                « Optimisation et automatisation expertes de la chaîne d'approvisionnement pour les PME, offrant des résultats de grande entreprise avec l'agilité et les tarifs d'un indépendant. »
-              </blockquote>
-              <p class="text-stone max-w-3xl mx-auto">
-                Ce positionnement comble directement le fossé du marché entre les grands cabinets de conseil coûteux et les indépendants à capacité limitée, en offrant une expertise spécialisée avec une prestation de service personnalisée.
-              </p>
-            </div>
-          </div>
-
-          <div class="grid lg:grid-cols-2 gap-12 mb-16">
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Plan Marketing</h3>
-              <p class="text-stone mb-6">
-                La stratégie marketing se concentre sur une communication ciblée auprès des PME des secteurs de la fabrication et du commerce de détail dans la région Grand Est, en s'appuyant sur le réseau professionnel et l'expertise sectorielle de Nouha.
-              </p>
-
-              <div class="space-y-4">
-                <div class="flex items-start">
-                  <i class="fab fa-linkedin text-2xl text-sage mt-1 mr-4"></i>
-                  <div>
-                    <h4 class="font-semibold">Marketing sur LinkedIn</h4>
-                    <p class="text-sm text-stone">Réseautage professionnel, partage de contenu et approche ciblée des décideurs</p>
-                  </div>
-                </div>
-                <div class="flex items-start">
-                  <i class="fas fa-edit text-2xl text-terracotta mt-1 mr-4"></i>
-                  <div>
-                    <h4 class="font-semibold">Marketing de Contenu</h4>
-                    <p class="text-sm text-stone">Articles de blog, livres blancs et études de cas démontrant l'expertise et la valeur</p>
-                  </div>
-                </div>
-                <div class="flex items-start">
-                  <i class="fas fa-users text-2xl text-stone mt-1 mr-4"></i>
-                  <div>
-                    <h4 class="font-semibold">Réseautage Professionnel</h4>
-                    <p class="text-sm text-stone">Événements sectoriels, organisations professionnelles locales et partenariats stratégiques</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Processus de Vente</h3>
-              <p class="text-stone mb-6">
-                Un entonnoir de vente structuré assure une qualification et une conversion efficaces des leads, en se concentrant sur la construction de relations clients à long terme plutôt que sur des engagements transactionnels.
-              </p>
-
-              <div class="bg-white p-6 rounded-xl">
-                <h4 class="font-semibold mb-4">Étapes de l'Entonnoir de Vente</h4>
-                <div class="space-y-3">
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm">Génération de Leads</span>
-                    <span class="text-xs bg-sage text-white px-2 py-1 rounded">Marketing</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm">Qualification</span>
-                    <span class="text-xs bg-terracotta text-white px-2 py-1 rounded">Appel de Découverte</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm">Découverte</span>
-                    <span class="text-xs bg-stone text-white px-2 py-1 rounded">Analyse des Besoins</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm">Proposition</span>
-                    <span class="text-xs bg-sage text-white px-2 py-1 rounded">Conception de Solution</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm">Clôture</span>
-                    <span class="text-xs bg-terracotta text-white px-2 py-1 rounded">Signature du Contrat</span>
-                  </div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <h4 class="font-bold text-charcoal mb-3">Phase 3 : Maturité (Années 4-5)</h4>
+                  <ul class="text-sm space-y-2">
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-charcoal mt-1 mr-2"></i>
+                      <span>Création de solutions propriétaires (SaaS)</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-charcoal mt-1 mr-2"></i>
+                      <span>Partenariats stratégiques</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-dot-circle text-charcoal mt-1 mr-2"></i>
+                      <span>Positionnement de référence régional</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
 
-          <div>
-            <h3 class="serif text-2xl font-semibold mb-8">Supports Marketing et Développement de la Marque</h3>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div class="bg-white p-6 rounded-xl text-center">
-                <i class="fas fa-globe text-3xl text-sage mb-4"></i>
-                <h4 class="font-semibold mb-2">Site Web Professionnel</h4>
-                <p class="text-sm text-stone">Plateforme centrale pour les services, le portfolio et la génération de leads</p>
+          <div class="bg-white rounded-lg p-8 shadow-sm">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6 text-center">Objectifs SMART - Année 1</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span class="font-bold text-lg">S</span>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Spécifique</h4>
+                <p class="text-sm">5-7 clients récurrents</p>
               </div>
-              <div class="bg-white p-6 rounded-xl text-center">
-                <i class="fas fa-folder-open text-3xl text-terracotta mb-4"></i>
-                <h4 class="font-semibold mb-2">Portfolio de Projets</h4>
-                <p class="text-sm text-stone">Études de cas anonymisées démontrant des résultats tangibles</p>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span class="font-bold text-lg">M</span>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Mesurable</h4>
+                <p class="text-sm">39 950€ CA
+                  <br>>60% marge nette
+                </p>
               </div>
-              <div class="bg-white p-6 rounded-xl text-center">
-                <i class="fas fa-file-alt text-3xl text-stone mb-4"></i>
-                <h4 class="font-semibold mb-2">Brochures de Services</h4>
-                <p class="text-sm text-stone">Supports professionnels pour le processus de vente</p>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span class="font-bold text-lg">A</span>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Atteignable</h4>
+                <p class="text-sm">100 jours facturés</p>
               </div>
-              <div class="bg-white p-6 rounded-xl text-center">
-                <i class="fas fa-certificate text-3xl text-sage mb-4"></i>
-                <h4 class="font-semibold mb-2">Témoignages Clients</h4>
-                <p class="text-sm text-stone">Matériaux de preuve sociale et de renforcement de la crédibilité</p>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span class="font-bold text-lg">R</span>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Pertinent</h4>
+                <p class="text-sm">Modèle projet standardisé</p>
+              </div>
+              <div class="text-center">
+                <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span class="font-bold text-lg">T</span>
+                </div>
+                <h4 class="font-bold text-charcoal mb-2">Temporel</h4>
+                <p class="text-sm">Rentabilité à 6 mois</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <div class="section-divider"></div>
+      <!-- Services -->
+      <section id="services" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">5. Gamme de Services</h2>
 
-      <section id="financial-projections" class="py-20 bg-white">
-        <div class="container mx-auto px-8">
-          <h2 class="serif text-4xl font-semibold text-charcoal mb-12">Projections Financières</h2>
-
-          <div class="grid lg:grid-cols-2 gap-12 mb-16">
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Investissement de Démarrage</h3>
-              <p class="text-stone mb-6">
-                L'investissement initial requis de <span class="insight-highlight">30 000 €</span> est conforme aux exigences du visa « Passeport Talent – Créateur d'entreprise » <a href="https://leblogdemaitrebabou.com/starting-and-running-a-business-in-france-as-a-foreigner-everything-you-need-to-know-with-our-practical-guide/" class="citation-link" target="_blank">[43, 47]</a> et fournit un fonds de roulement suffisant pour la première année d'activité.
+          <div class="mb-12">
+            <div class="text-center mb-8">
+              <h3 class="font-serif text-2xl font-bold text-sage mb-4">Deux Piliers d'Expertise Complémentaires</h3>
+              <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                NK Solutions combine une expertise technique pointue avec une approche business pragmatique pour offrir des solutions complètes et mesurables.
               </p>
+            </div>
 
-              <div class="bg-sage bg-opacity-10 p-6 rounded-xl mb-6">
-                <h4 class="font-semibold mb-4">Répartition de l'Investissement</h4>
-                <div class="space-y-3 text-sm">
-                  <div class="flex justify-between">
-                    <span>Équipement et Logiciels</span>
-                    <span class="font-medium">5 000 €</span>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <!-- Pillar 1: Digital Automation -->
+              <div class="bg-gradient-to-br from-sage to-sage-600 text-white rounded-lg p-8">
+                <div class="text-center mb-6">
+                  <div class="bg-white bg-opacity-20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-laptop-code text-3xl"></i>
                   </div>
-                  <div class="flex justify-between">
-                    <span>Frais Juridiques et d'Enregistrement</span>
-                    <span class="font-medium">1 500 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Développement du Site Web</span>
-                    <span class="font-medium">2 500 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Fonds de Roulement</span>
-                    <span class="font-medium">21 000 €</span>
-                  </div>
+                  <h3 class="font-serif text-2xl font-bold">Automatisation Numérique</h3>
                 </div>
-              </div>
-
-              <div class="chart-container">
-                <h4 class="text-lg font-semibold mb-4">Distribution des Coûts de Démarrage</h4>
                 <div class="space-y-4">
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Équipement (16,7 %)</span>
-                    <span class="font-semibold">5 000 €</span>
+                  <div>
+                    <h4 class="font-bold mb-2">Solutions Excel & VBA</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Développement de fichiers dynamiques et macros</li>
+                      <li>• Automatisation de rapports récurrents</li>
+                      <li>• Création d'interfaces utilisateur personnalisées</li>
+                    </ul>
                   </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Juridique (5 %)</span>
-                    <span class="font-semibold">1 500 €</span>
+                  <div>
+                    <h4 class="font-bold mb-2">Reporting & Business Intelligence</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Tableaux de bord Power BI interactifs</li>
+                      <li>• Visualisation des KPIs clés</li>
+                      <li>• Analyses de données prédictives</li>
+                    </ul>
                   </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Marketing (8,3 %)</span>
-                    <span class="font-semibold">2 500 €</span>
+                  <div>
+                    <h4 class="font-bold mb-2">Optimisation des Flux</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Automatisation des processus de saisie de données</li>
+                      <li>• Intégration entre systèmes disparates</li>
+                      <li>• Applications de suivi en temps réel</li>
+                    </ul>
                   </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-sm text-stone">Fonds de Roulement (70 %)</span>
-                    <span class="font-semibold text-sage">21 000 €</span>
+                </div>
+              </div>
+
+              <!-- Pillar 2: Supply Chain Optimization -->
+              <div class="bg-gradient-to-br from-terracotta to-terracotta-600 text-white rounded-lg p-8">
+                <div class="text-center mb-6">
+                  <div class="bg-white bg-opacity-20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-cogs text-3xl"></i>
+                  </div>
+                  <h3 class="font-serif text-2xl font-bold">Optimisation Supply Chain</h3>
+                </div>
+                <div class="space-y-4">
+                  <div>
+                    <h4 class="font-bold mb-2">Gestion des Achats et Approvisionnements</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Optimisation des processus d'achat</li>
+                      <li>• Gestion des fournisseurs et négociation</li>
+                      <li>• Rationalisation des stocks</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-bold mb-2">Logistique et Distribution</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Optimisation des flux physiques</li>
+                      <li>• Amélioration des processus d'expédition</li>
+                      <li>• Mise en place d'indicateurs de performance</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 class="font-bold mb-2">Lean Management</h4>
+                    <ul class="text-sm space-y-1 opacity-90">
+                      <li>• Identification et élimination des gaspillages</li>
+                      <li>• Amélioration continue des processus</li>
+                      <li>• Formation des équipes aux méthodes Lean</li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div>
-              <h3 class="serif text-2xl font-semibold mb-6">Dépenses de Fonctionnement</h3>
-              <p class="text-stone mb-6">
-                Les dépenses de fonctionnement mensuelles sont projetées à 1 500 €, maintenant une structure de coûts légère essentielle à la rentabilité et à une tarification compétitive dans le modèle de la micro-entreprise.
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6 text-center">Offres de Services Standardisées</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div class="bg-white rounded-lg shadow-lg border border-stone overflow-hidden">
+                <div class="bg-sage text-white p-4">
+                  <h4 class="font-bold text-lg mb-2">Audit & Diagnostic</h4>
+                  <p class="text-sm opacity-90">Analyse approfondie des processus existants</p>
+                </div>
+                <div class="p-6">
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Analyse des processus actuels</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Identification des goulots d'étranglement</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-sage mt-1 mr-2"></i>
+                      <span>Rapport d'optimisation stratégique</span>
+                    </li>
+                  </ul>
+                  <div class="text-center">
+                    <span class="text-2xl font-bold text-sage">1 500 €</span>
+                    <p class="text-xs text-gray-500">Forfait 3-5 jours</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg shadow-lg border border-stone overflow-hidden">
+                <div class="bg-terracotta text-white p-4">
+                  <h4 class="font-bold text-lg mb-2">Tableau de Bord Sur Mesure</h4>
+                  <p class="text-sm opacity-90">Reporting dynamique et interactif</p>
+                </div>
+                <div class="p-6">
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-terracotta mt-1 mr-2"></i>
+                      <span>Développement Power BI personnalisé</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-terracotta mt-1 mr-2"></i>
+                      <span>Connexion aux données sources</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-terracotta mt-1 mr-2"></i>
+                      <span>Formation à l'utilisation</span>
+                    </li>
+                  </ul>
+                  <div class="text-center">
+                    <span class="text-2xl font-bold text-terracotta">2 500 €</span>
+                    <p class="text-xs text-gray-500">Forfait 5-8 jours</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg shadow-lg border border-stone overflow-hidden">
+                <div class="bg-charcoal text-white p-4">
+                  <h4 class="font-bold text-lg mb-2">Automatisation Complète</h4>
+                  <p class="text-sm opacity-90">Transformation des processus clés</p>
+                </div>
+                <div class="p-6">
+                  <ul class="text-sm space-y-2 mb-6">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-charcoal mt-1 mr-2"></i>
+                      <span>Analyse et conception des flux</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-charcoal mt-1 mr-2"></i>
+                      <span>Développement VBA et intégration</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-charcoal mt-1 mr-2"></i>
+                      <span>Documentation et support</span>
+                    </li>
+                  </ul>
+                  <div class="text-center">
+                    <span class="text-2xl font-bold text-charcoal">Sur devis</span>
+                    <p class="text-xs text-gray-500">10-20 jours selon complexité</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-sage bg-opacity-10 rounded-lg p-8">
+            <h3 class="font-serif text-2xl font-bold text-charcoal mb-6 text-center">Modèle Économique et Tarification</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <i class="fas fa-calendar-day text-sage text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Tarification Journalière</h4>
+                <p class="text-3xl font-bold text-sage mb-2">400 €</p>
+                <p class="text-sm text-gray-600">Par jour de prestation
+                  <br>(7 heures)
+                </p>
+              </div>
+              <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <i class="fas fa-project-diagram text-terracotta text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Forfaits Projets</h4>
+                <p class="text-sm text-gray-600 mb-2">Pour les missions bien définies</p>
+                <p class="text-sm text-gray-600">Tarif fixe basé sur le périmètre</p>
+              </div>
+              <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                  <i class="fas fa-sync-alt text-charcoal text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Contrats de Maintenance</h4>
+                <p class="text-sm text-gray-600 mb-2">Support et optimisation continue</p>
+                <p class="text-sm text-gray-600">Forfait mensuel adapté aux besoins</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marketing Strategy -->
+      <section id="marketing" class="py-16 bg-cream">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">6. Stratégie Marketing et Commerciale</h2>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6 text-center">Proposition de Valeur Unique</h3>
+            <div class="bg-white rounded-lg p-8 shadow-sm text-center">
+              <p class="text-xl italic text-charcoal mb-4">
+                "Nous ne nous contentons pas de conseiller, nous construisons et implémentons les outils automatisés pour vous, garantissant des résultats concrets et mesurables."
               </p>
-
-              <div class="bg-white border border-gray-200 p-6 rounded-xl">
-                <h4 class="font-semibold mb-4">Frais Généraux Mensuels</h4>
-                <div class="space-y-3">
-                  <div class="flex justify-between">
-                    <span class="text-sm text-stone">Abonnements Logiciels</span>
-                    <span class="font-medium">300 €</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div>
+                  <div class="bg-sage text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-tools text-xl"></i>
                   </div>
-                  <div class="flex justify-between">
-                    <span class="text-sm text-stone">Assurance Professionnelle</span>
-                    <span class="font-medium">100 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-sm text-stone">Marketing et Réseautage</span>
-                    <span class="font-medium">400 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-sm text-stone">Internet et Téléphone</span>
-                    <span class="font-medium">100 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-sm text-stone">Frais Bancaires et Divers</span>
-                    <span class="font-medium">100 €</span>
-                  </div>
-                  <div class="border-t pt-2 flex justify-between font-semibold">
-                    <span>Total Mensuel</span>
-                    <span class="text-sage">1 500 €</span>
-                  </div>
+                  <h4 class="font-bold text-charcoal">Approche "Hands-on"</h4>
                 </div>
-              </div>
-
-              <div class="mt-6 p-4 bg-terracotta bg-opacity-10 rounded-lg">
-                <h5 class="font-semibold mb-2">Besoin de Revenu Personnel</h5>
-                <p class="text-sm text-stone">Revenu mensuel minimum nécessaire : <span class="font-semibold text-terracotta">1 500-2 000 €</span> pour couvrir les frais de subsistance à Reims</p>
+                <div>
+                  <div class="bg-terracotta text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-target text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-charcoal">Résultats Garantis</h4>
+                </div>
+                <div>
+                  <div class="bg-charcoal text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-handshake text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-charcoal">Partenariat Durable</h4>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="mb-16">
-            <h3 class="serif text-2xl font-semibold mb-8">Projections de Revenus</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="bg-sage bg-opacity-10 p-8 rounded-xl text-center">
-                <h4 class="font-semibold mb-4">Année 1</h4>
-                <div class="text-4xl font-bold text-sage mb-2">50 K€</div>
-                <p class="text-sm text-stone mb-4">Croissance prudente axée sur l'établissement d'une base de clients</p>
-                <div class="text-xs">5 clients | Moy. 10 K€ par projet</div>
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Stratégie de Prospection</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h4 class="font-bold text-charcoal mb-4">Canaux Prioritaires</h4>
+                <div class="space-y-4">
+                  <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="flex items-center mb-3">
+                      <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fab fa-linkedin"></i>
+                      </div>
+                      <h5 class="font-bold text-charcoal">LinkedIn</h5>
+                    </div>
+                    <p class="text-sm text-gray-600">Réseau professionnel, prospection directe, partage de contenu expert</p>
+                  </div>
+                  <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="flex items-center mb-3">
+                      <div class="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fas fa-briefcase"></i>
+                      </div>
+                      <h5 class="font-bold text-charcoal">Plateformes Freelance</h5>
+                    </div>
+                    <p class="text-sm text-gray-600">Malt, Upwork, Comet - accès à une clientèle qualifiée</p>
+                  </div>
+                  <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <div class="flex items-center mb-3">
+                      <div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fas fa-users"></i>
+                      </div>
+                      <h5 class="font-bold text-charcoal">Réseau Local</h5>
+                    </div>
+                    <p class="text-sm text-gray-600">CCI, BNI, événements locaux, bouche-à-oreille</p>
+                  </div>
+                </div>
               </div>
-              <div class="bg-terracotta bg-opacity-10 p-8 rounded-xl text-center">
-                <h4 class="font-semibold mb-4">Année 2</h4>
-                <div class="text-4xl font-bold text-terracotta mb-2">80 K€</div>
-                <p class="text-sm text-stone mb-4">Croissance accélérée avec une offre de services élargie</p>
-                <div class="text-xs">12 clients | 60 % de revenus récurrents</div>
-              </div>
-              <div class="bg-stone bg-opacity-10 p-8 rounded-xl text-center">
-                <h4 class="font-semibold mb-4">Année 3</h4>
-                <div class="text-4xl font-bold text-stone mb-2">120 K€</div>
-                <p class="text-sm text-stone mb-4">Présence établie sur le marché avec expansion de l'équipe</p>
-                <div class="text-xs">20 clients | 70 % de revenus récurrents</div>
+              <div>
+                <h4 class="font-bold text-charcoal mb-4">Processus de Vente</h4>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <div class="space-y-6">
+                    <div class="flex items-start">
+                      <div class="bg-sage text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                        <span class="font-bold text-sm">1</span>
+                      </div>
+                      <div>
+                        <h5 class="font-bold text-charcoal mb-1">Appel de Découverte</h5>
+                        <p class="text-sm text-gray-600">Compréhension des besoins et qualification du client</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <div class="bg-sage text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                        <span class="font-bold text-sm">2</span>
+                      </div>
+                      <div>
+                        <h5 class="font-bold text-charcoal mb-1">Audit Rapide</h5>
+                        <p class="text-sm text-gray-600">Analyse rapide des processus et identification des leviers</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <div class="bg-sage text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                        <span class="font-bold text-sm">3</span>
+                      </div>
+                      <div>
+                        <h5 class="font-bold text-charcoal mb-1">Proposition Commerciale</h5>
+                        <p class="text-sm text-gray-600">Devis détaillé avec périmètre, délai et tarif</p>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <div class="bg-sage text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                        <span class="font-bold text-sm">4</span>
+                      </div>
+                      <div>
+                        <h5 class="font-bold text-charcoal mb-1">Contrat et Démarrage</h5>
+                        <p class="text-sm text-gray-600">Signature et lancement de la mission</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div>
-            <h3 class="serif text-2xl font-semibold mb-8">Considérations Fiscales et Réglementaires</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="bg-white p-8 rounded-xl border-l-4 border-sage">
-                <h4 class="font-semibold mb-4">Régime de la Micro-Entreprise</h4>
-                <div class="space-y-3 text-sm">
-                  <div class="flex justify-between">
-                    <span>Seuil de Chiffre d'Affaires</span>
-                    <span class="font-medium">77 700 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Taux d'Imposition (BNC)</span>
-                    <span class="font-medium">66 % du CA</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Abattement Forfaitaire</span>
-                    <span class="font-medium">34 %</span>
-                  </div>
+          <div class="bg-white rounded-lg p-8 shadow-sm">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6 text-center">Stratégie de Croissance Commerciale</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="text-center">
+                <div class="bg-sage bg-opacity-10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-rocket text-sage text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Phase 1 : Lancement</h4>
+                <ul class="text-sm space-y-2 text-left">
+                  <li>• Prospection active sur LinkedIn</li>
+                  <li>• Mobilisation du réseau professionnel</li>
+                  <li>• Participation à des événements locaux</li>
+                  <li>• Création de contenu expert</li>
+                </ul>
+              </div>
+              <div class="text-center">
+                <div class="bg-terracotta bg-opacity-10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-chart-line text-terracotta text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Phase 2 : Croissance</h4>
+                <ul class="text-sm space-y-2 text-left">
+                  <li>• Fidélisation des clients existants</li>
+                  <li>• Développement du bouche-à-oreille</li>
+                  <li>• Partenariats avec cabinets comptables</li>
+                  <li>• Marketing de contenu renforcé</li>
+                </ul>
+              </div>
+              <div class="text-center">
+                <div class="bg-charcoal bg-opacity-10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-crown text-charcoal text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-lg text-charcoal mb-3">Phase 3 : Maturité</h4>
+                <ul class="text-sm space-y-2 text-left">
+                  <li>• Positionnement de référence</li>
+                  <li>• Partenariats stratégiques</li>
+                  <li>• Expansion géographique</li>
+                  <li>• Création de solutions propriétaires</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Financial Projections -->
+      <section id="financials" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+          <h2 class="font-serif text-4xl font-bold text-charcoal mb-12">7. Projections Financières</h2>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Hypothèses et Structure Financière</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div class="bg-stone rounded-lg p-6">
+                <h4 class="font-bold text-charcoal mb-4">Statut Fiscal et Social</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-sage mt-1 mr-2"></i>
+                    <span><strong>Régime</strong> : BNC (Bénéfices Non Commerciaux)</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-sage mt-1 mr-2"></i>
+                    <span><strong>Versement libératoire</strong> : 2,2% du chiffre d'affaires</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-sage mt-1 mr-2"></i>
+                    <span><strong>Charges sociales</strong> : 23% du chiffre d'affaires</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check-circle text-sage mt-1 mr-2"></i>
+                    <span><strong>Franchise en base TVA</strong> : Seuil < 70 000 €</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="bg-sage bg-opacity-10 rounded-lg p-6">
+                <h4 class="font-bold text-charcoal mb-4">Hypothèses Clés</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fas fa-calculator text-terracotta mt-1 mr-2"></i>
+                    <span><strong>Taux journalier</strong> : 400 € HT</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-calendar-alt text-terracotta mt-1 mr-2"></i>
+                    <span><strong>Jours facturables année 1</strong> : 100 jours</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-percentage text-terracotta mt-1 mr-2"></i>
+                    <span><strong>Taux de marge brute</strong> : 70%</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-chart-line text-terracotta mt-1 mr-2"></i>
+                    <span><strong>Croissance annuelle</strong> : +20% après année 1</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Prévisions de Chiffre d'Affaires et Rentabilité</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                <h4 class="font-bold text-charcoal mb-2">Année 1 (2025-2026)</h4>
+                <div class="text-3xl font-bold text-sage mb-2">39 950 €</div>
+                <p class="text-sm text-gray-600">100 jours facturés à 400 €</p>
+              </div>
+              <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                <h4 class="font-bold text-charcoal mb-2">Année 2 (2026-2027)</h4>
+                <div class="text-3xl font-bold text-terracotta mb-2">52 100 €</div>
+                <p class="text-sm text-gray-600">+20% de croissance</p>
+              </div>
+              <div class="bg-white rounded-lg shadow-lg p-6 text-center">
+                <h4 class="font-bold text-charcoal mb-2">Année 3 (2027-2028)</h4>
+                <div class="text-3xl font-bold text-charcoal mb-2">56 300 €</div>
+                <p class="text-sm text-gray-600">+20% de croissance</p>
+              </div>
+            </div>
+
+            <div class="bg-sage bg-opacity-10 rounded-lg p-8">
+              <h4 class="font-bold text-charcoal mb-6 text-center">Tableau de Bord Financier Clé - Année 1</h4>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                <div>
+                  <div class="text-2xl font-bold text-sage mb-1">39 950 €</div>
+                  <p class="text-sm text-gray-600">Chiffre d'affaires</p>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-terracotta mb-1">70%</div>
+                  <p class="text-sm text-gray-600">Marge brute</p>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-charcoal mb-1">60%</div>
+                  <p class="text-sm text-gray-600">Marge nette</p>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-blue-600 mb-1">6 mois</div>
+                  <p class="text-sm text-gray-600">Seuil rentabilité</p>
                 </div>
               </div>
-              <div class="bg-white p-8 rounded-xl border-l-4 border-terracotta">
-                <h4 class="font-semibold mb-4">Charges Sociales</h4>
-                <div class="space-y-3 text-sm">
-                  <div class="flex justify-between">
-                    <span>Taux de Cotisation</span>
-                    <span class="font-medium text-terracotta">24,60 %</span>
+            </div>
+          </div>
+
+          <div class="mb-12">
+            <h3 class="font-serif text-2xl font-bold text-sage mb-6">Compte de Résultat Prévisionnel - Année 1</h3>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-sage text-white">
+                    <tr>
+                      <th class="px-6 py-4 text-left">CHARGES</th>
+                      <th class="px-6 py-4 text-right">Montant</th>
+                      <th class="px-6 py-4 text-left">PRODUITS</th>
+                      <th class="px-6 py-4 text-right">Montant</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr class="bg-gray-50">
+                      <td class="px-6 py-3 text-sm font-medium">Charges externes</td>
+                      <td class="px-6 py-3 text-sm text-right">2 500 €</td>
+                      <td class="px-6 py-3 text-sm font-medium">Chiffre d'affaires</td>
+                      <td class="px-6 py-3 text-sm text-right font-bold">39 950 €</td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-3 text-sm">• Fournitures et logiciels</td>
+                      <td class="px-6 py-3 text-sm text-right">1 500 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-3 text-sm">• Frais de prospection</td>
+                      <td class="px-6 py-3 text-sm text-right">1 000 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                      <td class="px-6 py-3 text-sm font-medium">Impôts et taxes</td>
+                      <td class="px-6 py-3 text-sm text-right">858 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-3 text-sm">• Versement libératoire (2,2%)</td>
+                      <td class="px-6 py-3 text-sm text-right">858 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr class="bg-gray-50">
+                      <td class="px-6 py-3 text-sm font-medium">Charges sociales</td>
+                      <td class="px-6 py-3 text-sm text-right">8 970 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr>
+                      <td class="px-6 py-3 text-sm">• Cotisations sociales (23%)</td>
+                      <td class="px-6 py-3 text-sm text-right">8 970 €</td>
+                      <td class="px-6 py-3 text-sm" colspan="2"></td>
+                    </tr>
+                    <tr class="bg-sage bg-opacity-10">
+                      <td class="px-6 py-3 text-sm font-bold">TOTAL CHARGES</td>
+                      <td class="px-6 py-3 text-sm text-right font-bold">12 328 €</td>
+                      <td class="px-6 py-3 text-sm font-bold">TOTAL PRODUITS</td>
+                      <td class="px-6 py-3 text-sm text-right font-bold">39 950 €</td>
+                    </tr>
+                    <tr class="bg-terracotta bg-opacity-10">
+                      <td class="px-6 py-4 text-lg font-bold" colspan="2">BÉNÉFICE NET</td>
+                      <td class="px-6 py-4 text-lg text-right font-bold" colspan="2">26 672 €</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-sage bg-opacity-10 rounded-lg p-8">
+            <h3 class="font-serif text-2xl font-bold text-charcoal mb-6 text-center">Analyse du Seuil de Rentabilité</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm">
+                    <span class="font-bold text-charcoal">Seuil de rentabilité</span>
+                    <span class="text-2xl font-bold text-sage">18 500 €</span>
                   </div>
-                  <div class="flex justify-between">
-                    <span>Base de Calcul</span>
-                    <span class="font-medium">Chiffre d'Affaires</span>
+                  <div class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm">
+                    <span class="font-bold text-charcoal">Chiffre d'affaires objectif</span>
+                    <span class="text-2xl font-bold text-charcoal">39 950 €</span>
                   </div>
-                  <div class="flex justify-between">
-                    <span>Couverture</span>
-                    <span class="font-medium">Santé, Retraite, Famille</span>
+                  <div class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm">
+                    <span class="font-bold text-charcoal">Marge de sécurité</span>
+                    <span class="text-2xl font-bold text-green-600">53%</span>
                   </div>
                 </div>
+                <p class="text-sm text-gray-600 mt-4">
+                  Le seuil de rentabilité est atteint au bout de <strong>6 mois</strong> d'activité, ce qui garantit une viabilité financière rapide.
+                  <a href="https://www.toute-la-franchise.com/article-seuil-de-rentabilite-calcul" class="text-sage hover:underline ml-1" target="_blank">[Source]</a>
+                </p>
               </div>
-              <div class="bg-white p-8 rounded-xl border-l-4 border-stone">
-                <h4 class="font-semibold mb-4">Statut TVA</h4>
-                <div class="space-y-3 text-sm">
-                  <div class="flex justify-between">
-                    <span>Franchise en Base</span>
-                    <span class="font-medium">Exonéré</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Seuil</span>
-                    <span class="font-medium">34 400 €</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span>Statut</span>
-                    <span class="font-medium text-sage">Simplifié</span>
+              <div>
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                  <h4 class="font-bold text-charcoal mb-4">Calcul du Seuil de Rentabilité</h4>
+                  <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                      <span>Charges fixes annuelles :</span>
+                      <span class="font-bold">12 328 €</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span>Taux de marge variable :</span>
+                      <span class="font-bold">70%</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex justify-between font-bold">
+                      <span>Seuil de rentabilité :</span>
+                      <span>12 328 € ÷ 70% = 17 611 €</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1000,22 +1192,41 @@
         </div>
       </section>
 
+      <!-- Footer -->
       <footer class="bg-charcoal text-white py-12">
-        <div class="container mx-auto px-8 text-center">
-          <p class="text-stone mb-4">Cadre du Plan d'Affaires NK Solutions</p>
-          <p class="text-sm text-stone">Cadre stratégique pour démontrer la viabilité économique et obtenir les approbations administratives sur le marché français</p>
-          <p class="text-xs text-stone mt-6">Toutes les projections financières sont basées sur des études de marché et des estimations prudentes. Les résultats réels peuvent varier.</p>
+        <div class="container mx-auto px-6 text-center">
+          <div class="mb-6">
+            <h3 class="font-serif text-2xl font-bold mb-2">NK Solutions</h3>
+            <p class="text-gray-300">Optimisation Supply Chain pour PME</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h4 class="font-bold mb-3">Contact</h4>
+              <p class="text-sm text-gray-300">Nouha Karim</p>
+              <p class="text-sm text-gray-300">6 Rue Jean-Marie Le Sidaner</p>
+              <p class="text-sm text-gray-300">51100 Reims, France</p>
+            </div>
+            <div>
+              <h4 class="font-bold mb-3">Services</h4>
+              <p class="text-sm text-gray-300">Automatisation Excel & VBA</p>
+              <p class="text-sm text-gray-300">Reporting Power BI</p>
+              <p class="text-sm text-gray-300">Optimisation Supply Chain</p>
+            </div>
+            <div>
+              <h4 class="font-bold mb-3">Lancement</h4>
+              <p class="text-sm text-gray-300">Date de début : 01/09/2025</p>
+              <p class="text-sm text-gray-300">Statut : Micro-entreprise</p>
+              <p class="text-sm text-gray-300">Code APE : 6201Z</p>
+            </div>
+          </div>
+          <div class="text-sm text-gray-400">
+            <p>Business Plan - NK Solutions © 2025</p>
+          </div>
         </div>
       </footer>
-    </main>
+    </div>
 
     <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const nav = document.querySelector('.nav-fixed');
-            nav.classList.toggle('mobile-open');
-        }
-
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1026,32 +1237,28 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
-                    
-                    // Close mobile menu if open
-                    const nav = document.querySelector('.nav-fixed');
-                    nav.classList.remove('mobile-open');
                 }
             });
         });
 
-        // Active navigation highlighting
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.toc-link');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
+        // Toggle TOC on mobile
+        const toc = document.getElementById('toc');
+        const tocToggle = document.getElementById('toc-toggle');
+        const tocClose = document.getElementById('toc-close');
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
+        tocToggle.addEventListener('click', () => {
+            toc.classList.toggle('-translate-x-full');
+        });
+
+        tocClose.addEventListener('click', () => {
+            toc.classList.add('-translate-x-full');
+        });
+
+        // Close TOC when clicking on a link (mobile)
+        document.querySelectorAll('#toc a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    toc.classList.add('-translate-x-full');
                 }
             });
         });
